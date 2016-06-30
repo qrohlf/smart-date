@@ -1,0 +1,38 @@
+{
+  "name": "@qrohlf/smart-date",
+  "version": "1.0.0",
+  "description": "Takes date objects. Returns sane human-readable strings.",
+  "main": "index.js",
+  "browser": "es5.js",
+  "scripts": {
+    "test": "standard index.js && mocha tests.js",
+    "build": "babel --presets es2015 index.js --out-file es5.js",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qrohlf/smart-date.git"
+  },
+  "keywords": [
+    "date",
+    "format",
+    "human"
+  ],
+  "author": "Quinn Rohlf <qr@qrohlf.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qrohlf/smart-date/issues"
+  },
+  "homepage": "https://github.com/qrohlf/smart-date#readme",
+  "dependencies": {
+    "moment": "^2.13.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-es2015": "^6.9.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
+    "sinon": "^1.17.4",
+    "standard": "^7.1.2"
+  }
+}
