@@ -42,9 +42,7 @@ function interpretRelativeOpt (m, relative) {
       return m.isBetween(start, end)
     }
     case 'boolean': {
-      const start = moment().subtract(1, 'week')
-      const end = moment().add(1, 'week')
-      return relative && m.isBetween(start, end)
+      return relative
     }
     default: {
       throw Error('Invalid value `' + relative + '` supplied for options.relative')

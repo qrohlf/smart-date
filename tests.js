@@ -59,9 +59,9 @@ describe('formatSingleDate', () => {
   })
 
   describe('relative option', () => {
-    it('defaults to 1 week for {relative: true}', () => {
-      expect(formatSingleDate('2016-06-22', {relative: true})).to.eql('June 22nd')
-      expect(formatSingleDate('2016-06-23', {relative: true})).to.eql('June 23rd')
+    it('displays all dates as relative for {relative: true}', () => {
+      expect(formatSingleDate('2014-05-30', {relative: true})).to.eql('2 years ago')
+      expect(formatSingleDate('2015-05-30', {relative: true})).to.eql('a year ago')
       expect(formatSingleDate('2016-06-24', {relative: true})).to.eql('6 days ago')
       expect(formatSingleDate('2016-06-25', {relative: true})).to.eql('5 days ago')
       expect(formatSingleDate('2016-06-26', {relative: true})).to.eql('4 days ago')
@@ -71,10 +71,7 @@ describe('formatSingleDate', () => {
       expect(formatSingleDate('2016-07-01', {relative: true})).to.eql('tomorrow')
       expect(formatSingleDate('2016-07-02', {relative: true})).to.eql('in 2 days')
       expect(formatSingleDate('2016-07-03', {relative: true})).to.eql('in 3 days')
-      expect(formatSingleDate('2016-07-04', {relative: true})).to.eql('in 4 days')
-      expect(formatSingleDate('2016-07-05', {relative: true})).to.eql('in 5 days')
-      expect(formatSingleDate('2016-07-06', {relative: true})).to.eql('in 6 days')
-      expect(formatSingleDate('2016-07-07', {relative: true})).to.eql('July 7th')
+      expect(formatSingleDate('2019-07-03', {relative: true})).to.eql('in 3 years')
     })
 
     it('supports the `day` option', () => {
