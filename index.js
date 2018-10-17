@@ -12,8 +12,14 @@ function smartDate (dates, options) {
 }
 
 function applyDefaults (date, options) {
+  // if the date being passed in is an ISO8601 string, try to sniff
+  // whether we should include the time or not based on the presence
+  // of the 'T' (time) parameter
+  const includeTime = typeof date === 'string'
+    ? date.includes(' ') || date.includes('T')
+    : true
   const defaults = {
-    includeTime: date.includes(' ') || date.includes('T'),
+    includeTime,
     includeYear: moment(date).year() !== moment().year()
   }
   return Object.assign({}, defaults, options)

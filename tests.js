@@ -1,5 +1,7 @@
+/* eslint-env mocha */
 const {expect} = require('chai')
 const sinon = require('sinon')
+const moment = require('moment')
 const smartDate = require('./index')
 const {formatSingleDate, formatDateRange} = smartDate
 
@@ -47,9 +49,19 @@ describe('formatSingleDate', () => {
     expect(formatSingleDate('2016-07-04')).to.eql('July 4th')
     expect(formatSingleDate('2016-07-04', {includeTime: true})).to.eql('July 4th, 12:00 am')
   })
+
+  it('accepts native Date objects', () => {
+    expect(formatSingleDate(new Date('2016-07-04T00:00'))).to.eql('July 4th, 12:00 am')
+  })
+
+  it('accepts Moment objects', () => {
+    expect(formatSingleDate(moment('2016-07-04T00:00'))).to.eql('July 4th, 12:00 am')
+  })
 })
 
 describe('formatDateRange', () => {
+  let clock
+
   beforeEach(() => {
     clock = sinon.useFakeTimers(new Date(TODAY).getTime())
   })
@@ -135,9 +147,23 @@ describe('formatDateRange', () => {
     expect(formatDateRange('2016-07-04', '2016-07-05')).to.eql('July 4-5')
     expect(formatDateRange('2016-07-04', '2016-07-05', {includeYear: true})).to.eql('July 4-5, 2016')
   })
+
+  it('accepts native Date objects', () => {
+    expect(
+      formatDateRange(new Date('2016-07-04T00:00'), new Date('2016-07-05T00:00'))
+    ).to.eql('July 4th, 12:00 am - July 5th, 12:00 am')
+  })
+
+  it('accepts Moment objects', () => {
+    expect(
+      formatDateRange(moment('2016-07-04T00:00'), moment('2016-07-05T00:00'))
+    ).to.eql('July 4th, 12:00 am - July 5th, 12:00 am')
+  })
 })
 
 describe('smartDate', () => {
+  let clock
+
   beforeEach(() => {
     clock = sinon.useFakeTimers(new Date(TODAY).getTime())
   })
