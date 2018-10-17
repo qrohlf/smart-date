@@ -5,7 +5,7 @@ const moment = require('moment')
 const smartDate = require('./index')
 const {formatSingleDate, formatDateRange} = smartDate
 
-const TODAY = '2016-06-30' // may not actually be today tomorrow
+const TODAY = '2016-06-30T00:00' // may not actually be today tomorrow
 
 describe('formatSingleDate', () => {
   let clock
@@ -56,6 +56,84 @@ describe('formatSingleDate', () => {
 
   it('accepts Moment objects', () => {
     expect(formatSingleDate(moment('2016-07-04T00:00'))).to.eql('July 4th, 12:00 am')
+  })
+
+  describe('relative option', () => {
+    it('defaults to 1 week for {relative: true}', () => {
+      expect(formatSingleDate('2016-06-22', {relative: true})).to.eql('June 22nd')
+      expect(formatSingleDate('2016-06-23', {relative: true})).to.eql('June 23rd')
+      expect(formatSingleDate('2016-06-24', {relative: true})).to.eql('6 days ago')
+      expect(formatSingleDate('2016-06-25', {relative: true})).to.eql('5 days ago')
+      expect(formatSingleDate('2016-06-26', {relative: true})).to.eql('4 days ago')
+      expect(formatSingleDate('2016-06-27', {relative: true})).to.eql('3 days ago')
+      expect(formatSingleDate('2016-06-28', {relative: true})).to.eql('2 days ago')
+      expect(formatSingleDate('2016-06-29', {relative: true})).to.eql('yesterday')
+      expect(formatSingleDate('2016-07-01', {relative: true})).to.eql('tomorrow')
+      expect(formatSingleDate('2016-07-02', {relative: true})).to.eql('in 2 days')
+      expect(formatSingleDate('2016-07-03', {relative: true})).to.eql('in 3 days')
+      expect(formatSingleDate('2016-07-04', {relative: true})).to.eql('in 4 days')
+      expect(formatSingleDate('2016-07-05', {relative: true})).to.eql('in 5 days')
+      expect(formatSingleDate('2016-07-06', {relative: true})).to.eql('in 6 days')
+      expect(formatSingleDate('2016-07-07', {relative: true})).to.eql('July 7th')
+    })
+
+    it('supports the `day` option', () => {
+      const relative = 'day'
+      expect(formatSingleDate('2016-06-29', {relative})).to.eql('June 29th')
+      expect(formatSingleDate('2016-06-29T20:50', {relative})).to.eql('3 hours ago')
+      expect(formatSingleDate('2016-06-29T23:50', {relative})).to.eql('10 minutes ago')
+      expect(formatSingleDate('2016-06-30T10:00', {relative})).to.eql('in 10 hours')
+      expect(formatSingleDate('2016-07-01', {relative})).to.eql('July 1st')
+    })
+
+    it('supports the `week` option', () => {
+      const relative = 'week'
+      expect(formatSingleDate('2016-06-22', {relative})).to.eql('June 22nd')
+      expect(formatSingleDate('2016-06-23', {relative})).to.eql('June 23rd')
+      expect(formatSingleDate('2016-06-24', {relative})).to.eql('6 days ago')
+      expect(formatSingleDate('2016-06-25', {relative})).to.eql('5 days ago')
+      expect(formatSingleDate('2016-06-26', {relative})).to.eql('4 days ago')
+      expect(formatSingleDate('2016-06-27', {relative})).to.eql('3 days ago')
+      expect(formatSingleDate('2016-06-28', {relative})).to.eql('2 days ago')
+      expect(formatSingleDate('2016-06-29', {relative})).to.eql('yesterday')
+      expect(formatSingleDate('2016-07-01', {relative})).to.eql('tomorrow')
+      expect(formatSingleDate('2016-07-02', {relative})).to.eql('in 2 days')
+      expect(formatSingleDate('2016-07-03', {relative})).to.eql('in 3 days')
+      expect(formatSingleDate('2016-07-04', {relative})).to.eql('in 4 days')
+      expect(formatSingleDate('2016-07-05', {relative})).to.eql('in 5 days')
+      expect(formatSingleDate('2016-07-06', {relative})).to.eql('in 6 days')
+      expect(formatSingleDate('2016-07-07', {relative})).to.eql('July 7th')
+    })
+
+    it('supports the `month` option', () => {
+      const relative = 'month'
+      expect(formatSingleDate('2016-05-30', {relative})).to.eql('May 30th')
+      expect(formatSingleDate('2016-05-31', {relative})).to.eql('a month ago')
+      expect(formatSingleDate('2016-06-15', {relative})).to.eql('15 days ago')
+      expect(formatSingleDate('2016-06-29T23:50', {relative})).to.eql('10 minutes ago')
+      expect(formatSingleDate('2016-07-15', {relative})).to.eql('in 15 days')
+      expect(formatSingleDate('2016-07-29', {relative})).to.eql('in a month')
+      expect(formatSingleDate('2016-07-30', {relative})).to.eql('July 30th')
+    })
+
+    it('supports the `year` option', () => {
+      const relative = 'year'
+      expect(formatSingleDate('2015-05-30', {relative})).to.eql('May 30th, 2015')
+      expect(formatSingleDate('2016-04-30', {relative})).to.eql('2 months ago')
+      expect(formatSingleDate('2016-06-15', {relative})).to.eql('15 days ago')
+      expect(formatSingleDate('2016-06-29T23:50', {relative})).to.eql('10 minutes ago')
+      expect(formatSingleDate('2016-08-15', {relative})).to.eql('in 2 months')
+      expect(formatSingleDate('2016-12-29', {relative})).to.eql('in 6 months')
+      expect(formatSingleDate('2017-07-30', {relative})).to.eql('July 30th, 2017')
+    })
+
+    it('accepts a custom function {relative: () => bool}', () => {
+      const isEven = m => (m.date() % 2) === 0
+      expect(formatSingleDate('2016-06-22', {relative: isEven})).to.eql('8 days ago')
+      expect(formatSingleDate('2016-06-23', {relative: isEven})).to.eql('June 23rd')
+      expect(formatSingleDate('2016-06-24', {relative: isEven})).to.eql('6 days ago')
+      expect(formatSingleDate('2016-06-25', {relative: isEven})).to.eql('June 25th')
+    })
   })
 })
 

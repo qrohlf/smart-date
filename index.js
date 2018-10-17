@@ -20,14 +20,53 @@ function applyDefaults (date, options) {
     : true
   const defaults = {
     includeTime,
-    includeYear: moment(date).year() !== moment().year()
+    includeYear: moment(date).year() !== moment().year(),
+    relative: false
   }
   return Object.assign({}, defaults, options)
 }
 
+// given the specific date in question, and the value the caller has given for
+// options.relative, return whether the date should be displayed as relative or not
+function interpretRelativeOpt (m, relative) {
+  switch (typeof relative) {
+    case 'function': {
+      return relative(m)
+    }
+    case 'string': {
+      if (!['day', 'week', 'month', 'year'].includes(relative)) {
+        throw Error('Invalid value `' + relative + '` supplied for options.relative')
+      }
+      const start = moment().subtract(1, relative)
+      const end = moment().add(1, relative)
+      return m.isBetween(start, end)
+    }
+    case 'boolean': {
+      const start = moment().subtract(1, 'week')
+      const end = moment().add(1, 'week')
+      return relative && m.isBetween(start, end)
+    }
+    default: {
+      throw Error('Invalid value `' + relative + '` supplied for options.relative')
+    }
+  }
+}
+
 function formatSingleDate (date, options) {
-  const {includeTime, includeYear} = applyDefaults(date, options)
+  const {includeTime, includeYear, relative} = applyDefaults(date, options)
   const m = moment(date)
+  const shouldDisplayRelative = relative && interpretRelativeOpt(m, relative)
+  if (shouldDisplayRelative) {
+    const relativeString = m.fromNow()
+    switch (relativeString) {
+      case 'a day ago':
+        return 'yesterday'
+      case 'in a day':
+        return 'tomorrow'
+      default:
+        return relativeString
+    }
+  }
   const format = [
     'MMMM Do',
     includeTime && 'h:mm a',
